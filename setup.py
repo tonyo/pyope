@@ -7,4 +7,6 @@ setup(name='pyope',
       author_email='anton.ovchi2nikov@gmail.com',
       license='MIT',
       packages=['pyope'],
+      setup_requires=['numpy>=1.7.2'],
+      install_requires=['numpy>=1.7.2'],
 )

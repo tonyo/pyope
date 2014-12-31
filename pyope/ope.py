@@ -1,7 +1,7 @@
 from hmac import HMAC
 from math import ceil, log
 import random
-import hgd
+import stat
 
 DEFAULT_IN_START = 0
 DEFAULT_IN_END = 2**16 - 1
@@ -52,10 +52,10 @@ class OPE(object):
         mid = out_edge + int(ceil(out_size / 2.0))  # y
         if in_range.size() == 1:
             coins = self.tape_gen(plaintext, out_range.range_bit_size())
-            ciphertext = out_range.start + (coins % out_size)
+            ciphertext = stat.sample_uniform(out_range, coins)
             return ciphertext
         coins = self.tape_gen(mid, in_range.range_bit_size())
-        x = hgd.sample_hgd(in_range, out_range, mid, coins)
+        x = stat.sample_hgd(in_range, out_range, mid, coins)
 
         if plaintext <= x:
             in_range = ValueRange(in_edge + 1, x)
@@ -78,13 +78,13 @@ class OPE(object):
         if in_range.size() == 1:
             in_range_min = in_range.start
             coins = self.tape_gen(in_range_min, out_range.range_bit_size())
-            sampled_ciphertext = out_range.start + (coins % out_size)
+            sampled_ciphertext = stat.sample_uniform(out_range, coins)
             if sampled_ciphertext == ciphertext:
                 return in_range_min
             else:
                 raise Exception('Invalid ciphertext')
         coins = self.tape_gen(mid, in_range.range_bit_size())
-        x = hgd.sample_hgd(in_range, out_range, mid, coins)
+        x = stat.sample_hgd(in_range, out_range, mid, coins)
 
         if ciphertext <= mid:
             in_range = ValueRange(in_edge + 1, x)
@@ -99,12 +99,12 @@ class OPE(object):
         """Returns a bit string as a long integer"""
         assert(bits_needed >= 0)
         if bits_needed == 0:
-            return 0
+            return [0]
         # TODO proper pack?
         data = bytes(data)
         hmac_obj = HMAC(self.key)
         hmac_obj.update(data)
         digest = hmac_obj.digest()
         random.seed(digest)
-        bits = random.getrandbits(bits_needed)
+        bits = [random.randint(0, 1) for _ in range(bits_needed)]
         return bits
