@@ -4,9 +4,9 @@ import random
 import stat
 
 DEFAULT_IN_START = 0
-DEFAULT_IN_END = 2**16 - 1
+DEFAULT_IN_END = 2**15 - 1
 DEFAULT_OUT_START = 0
-DEFAULT_OUT_END = 2**32 - 1
+DEFAULT_OUT_END = 2**31 - 1
 
 
 class ValueRange(object):
@@ -14,7 +14,7 @@ class ValueRange(object):
     def __init__(self, start, end):
         start, end = int(start), int(end)
         if start > end:
-            raise Exception("Invalid range: start is larger than end")
+            raise Exception("Invalid range: start is greater than end")
         self.start = start
         self.end = end
 
@@ -93,7 +93,6 @@ class OPE(object):
             in_range = ValueRange(x + 1, in_edge + in_size)
             out_range = ValueRange(mid + 1, out_edge + out_size)
         return self.decrypt_recursive(ciphertext, in_range, out_range)
-
 
     def tape_gen(self, data, bits_needed):
         """Returns a bit string as a long integer"""
