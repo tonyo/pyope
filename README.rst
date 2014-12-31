@@ -27,6 +27,7 @@ TODO
 - Get rid of numpy dependency (rewrite hypergeometric sampling code?)
 - Optimize speed
 - PyPi package
+- Security guarantees
 
 
 
