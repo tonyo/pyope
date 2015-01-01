@@ -1,8 +1,6 @@
 import random
 import numpy.random as numpy_random
 
-# TODO remove it, but make portable?
-MAX_INT = 2**32
 
 def sample_hgd(in_range, out_range, nsample, seed_coins):
     numpy_random.seed(seed_coins)
@@ -29,6 +27,6 @@ def sample_hgd(in_range, out_range, nsample, seed_coins):
         return in_sample
 
 
-def sample_uniform(range, seed_coins):
+def sample_uniform(in_range, seed_coins):
     random.seed(''.join(str(c) for c in seed_coins))
-    return random.randint(range.start, range.end)
+    return random.randint(in_range.start, in_range.end)
