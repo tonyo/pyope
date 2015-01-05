@@ -31,6 +31,9 @@ class ValueRange(object):
     def contains(self, number):
         return self.start <= number <= self.end
 
+    def copy(self):
+        return ValueRange(self.start, self.end)
+
 
 class OPE(object):
 
@@ -106,7 +109,7 @@ class OPE(object):
         """Returns a bit string as a long integer"""
         assert(bits_needed >= 0)
         if bits_needed == 0:
-            return [0]
+            return []
         # TODO proper pack?
         data = bytes(data)
         hmac_obj = hmac.HMAC(self.key)
