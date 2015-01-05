@@ -1,4 +1,3 @@
-import random
 import numpy.random as numpy_random
 
 
@@ -28,5 +27,21 @@ def sample_hgd(in_range, out_range, nsample, seed_coins):
 
 
 def sample_uniform(in_range, seed_coins):
-    random.seed(''.join(str(c) for c in seed_coins))
-    return random.randint(in_range.start, in_range.end)
+    cur_range = in_range.copy()
+    assert cur_range.size() != 0
+    # Sentinel value
+    seed_coins.append(None)
+    bit_iterator = iter(seed_coins)
+    while cur_range.size() > 1:
+        mid = (cur_range.start + cur_range.end) / 2
+        bit = bit_iterator.next()
+        if bit == 0:
+            cur_range.end = mid
+        elif bit == 1:
+            cur_range.start = mid + 1
+        elif bit is None:
+            raise Exception("Not enough coins")
+        else:
+            raise Exception("Invalid coin")
+    assert cur_range.size() == 1
+    return cur_range.start
