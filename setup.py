@@ -17,6 +17,6 @@ setup(
     license='MIT',
     packages=['pyope'],
     setup_requires=['numpy>=1.7.2'],
-    install_requires=['numpy>=1.7.2'],
+    install_requires=['numpy>=1.7.2', 'pytest>=2.6.4', 'pycrypto>=2.6.1'],
     zip_safe=False,
 )
