@@ -1,7 +1,11 @@
 import hmac
 import math
 import random
+from Crypto.Cipher import AES
+from Crypto.Util import Counter
+from pyope.util import str_to_bitstring
 import stat
+import hashlib
 
 from pyope.errors import InvalidCiphertextError, InvalidRangeLimitsError, OutOfRangeError
 
@@ -107,14 +111,22 @@ class OPE(object):
 
     def tape_gen(self, data, bits_needed):
         """Returns a bit string as a long integer"""
+        bits_needed = int(bits_needed)
         assert(bits_needed >= 0)
         if bits_needed == 0:
             return []
-        # TODO proper pack?
         data = bytes(data)
-        hmac_obj = hmac.HMAC(self.key)
+        # Derive a key
+        hmac_obj = hmac.HMAC(self.key, digestmod=hashlib.sha256)
         hmac_obj.update(data)
+        assert hmac_obj.digest_size == 32
         digest = hmac_obj.digest()
-        random.seed(digest)
-        bits = [random.randint(0, 1) for _ in range(bits_needed)]
+
+        # Use AES-CTR cipher to generate a pseudo-random bit string
+        aes_cipher = AES.new(digest, AES.MODE_CTR, counter=Counter.new(nbits=128))
+        bytes_needed = (bits_needed + 7) / 8
+        encrypted_data = aes_cipher.encrypt('\x00' * bytes_needed)
+
+        # Convert the data to a list of bits
+        bits = str_to_bitstring(encrypted_data)[:bits_needed]
         return bits
