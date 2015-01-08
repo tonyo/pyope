@@ -1,7 +1,9 @@
 pyope
 =====
 
-This is an implementation of Boldyreva symmetric order-preserving encryption scheme (http://www.cc.gatech.edu/~aboldyre/papers/bclo.pdf).
+|PyPi version|
+
+This is an implementation of Boldyreva symmetric `order-preserving encryption`_ scheme (`Boldyreva's paper`_).
 
 Quick example
 -------------
@@ -17,7 +19,9 @@ Quick example
 Running tests
 -------------
 
-`$ py.test tests/`
+::
+
+$ py.test tests/
 
 TODO
 ----
@@ -30,5 +34,6 @@ TODO
 - Security guarantees
 
 
-
-
+.. |PyPi version| image:: https://pypip.in/v/pyope/badge.png
+.. _order-preserving encryption: https://crypto.stackexchange.com/questions/3813/how-does-order-preserving-encryption-work
+.. _Boldyreva's paper: http://www.cc.gatech.edu/~aboldyre/papers/bclo.pdf
