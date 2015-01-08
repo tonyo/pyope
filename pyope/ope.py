@@ -1,13 +1,11 @@
 import hmac
 import math
-import random
+import hashlib
 from Crypto.Cipher import AES
 from Crypto.Util import Counter
-from pyope.util import str_to_bitstring
+import util
 import stat
-import hashlib
-
-from pyope.errors import InvalidCiphertextError, InvalidRangeLimitsError, OutOfRangeError
+from errors import InvalidCiphertextError, InvalidRangeLimitsError, OutOfRangeError
 
 
 DEFAULT_IN_RANGE_START = 0
@@ -17,6 +15,7 @@ DEFAULT_OUT_RANGE_END = 2**31 - 1
 
 
 class ValueRange(object):
+    """A range of consecutive integers with the specified boundaries (both inclusive)"""
 
     def __init__(self, start, end):
         start, end = int(start), int(end)
@@ -26,6 +25,7 @@ class ValueRange(object):
         self.end = end
 
     def size(self):
+        """Return the range length, including its start and end"""
         return self.end - self.start + 1
 
     def range_bit_size(self):
@@ -33,9 +33,11 @@ class ValueRange(object):
         return int(math.ceil(math.log(self.size(), 2)))
 
     def contains(self, number):
+        """Check if the number is within the range"""
         return self.start <= number <= self.end
 
     def copy(self):
+        """Make a copy of the range"""
         return ValueRange(self.start, self.end)
 
 
@@ -52,6 +54,7 @@ class OPE(object):
         self.out_range = out_range
 
     def encrypt(self, plaintext):
+        """Encrypt the given plaintext"""
         if not self.in_range.contains(plaintext):
             raise OutOfRangeError('Plaintext is not within the input range')
         return self.encrypt_recursive(plaintext, self.in_range, self.out_range)
@@ -79,6 +82,7 @@ class OPE(object):
         return self.encrypt_recursive(plaintext, in_range, out_range)
 
     def decrypt(self, ciphertext):
+        """Decrypt the given ciphertext"""
         if not self.out_range.contains(ciphertext):
             raise OutOfRangeError('Plaintext is not within the output range')
         return self.decrypt_recursive(ciphertext, self.in_range, self.out_range)
@@ -110,12 +114,13 @@ class OPE(object):
         return self.decrypt_recursive(ciphertext, in_range, out_range)
 
     def tape_gen(self, data, bits_needed):
-        """Returns a bit string as a long integer"""
+        """Return a bit string, generated from the specified data string"""
         bits_needed = int(bits_needed)
         assert(bits_needed >= 0)
         if bits_needed == 0:
             return []
         data = bytes(data)
+
         # Derive a key
         hmac_obj = hmac.HMAC(self.key, digestmod=hashlib.sha256)
         hmac_obj.update(data)
@@ -128,5 +133,5 @@ class OPE(object):
         encrypted_data = aes_cipher.encrypt('\x00' * bytes_needed)
 
         # Convert the data to a list of bits
-        bits = str_to_bitstring(encrypted_data)[:bits_needed]
+        bits = util.str_to_bitstring(encrypted_data)[:bits_needed]
         return bits

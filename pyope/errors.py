@@ -9,3 +9,10 @@ class InvalidRangeLimitsError(ValueError):
 class OutOfRangeError(ValueError):
     pass
 
+
+class NotEnoughCoinsError(Exception):
+    pass
+
+
+class InvalidCoinError(Exception):
+    pass
