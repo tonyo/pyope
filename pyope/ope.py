@@ -3,9 +3,9 @@ import math
 import hashlib
 from Crypto.Cipher import AES
 from Crypto.Util import Counter
-import util
-import stat
-from errors import InvalidCiphertextError, InvalidRangeLimitsError, OutOfRangeError
+from pyope.errors import InvalidCiphertextError, InvalidRangeLimitsError, OutOfRangeError
+import pyope.stat as stat
+import pyope.util as util
 
 
 DEFAULT_IN_RANGE_START = 0
@@ -21,8 +21,28 @@ class ValueRange(object):
         start, end = int(start), int(end)
         if start > end:
             raise InvalidRangeLimitsError("Invalid range: the start of the range is greater than the end")
-        self.start = start
-        self.end = end
+        self._start = start
+        self._end = end
+
+    @property
+    def start(self):
+        return self._start
+
+    @start.setter
+    def start(self, value):
+        if not isinstance(value, int):
+            raise ValueError('Start value must be integer')
+        self._start = value
+
+    @property
+    def end(self):
+        return self._end
+
+    @end.setter
+    def end(self, value):
+        if not isinstance(value, int):
+            raise ValueError('End value must be integer')
+        self._end = value
 
     def size(self):
         """Return the range length, including its start and end"""
@@ -44,7 +64,10 @@ class ValueRange(object):
 class OPE(object):
 
     def __init__(self, key, in_range=None, out_range=None):
+        if not isinstance(key, bytes):
+            raise TypeError("key: expected bytes, but got %r" % type(key).__name__)
         self.key = key
+
         if in_range is None:
             in_range = ValueRange(DEFAULT_IN_RANGE_START, DEFAULT_IN_RANGE_END)
         self.in_range = in_range
@@ -116,7 +139,7 @@ class OPE(object):
     def tape_gen(self, data, bits_needed):
         """Return a bit string, generated from the specified data string"""
         bits_needed = int(bits_needed)
-        assert(bits_needed >= 0)
+        assert bits_needed >= 0
         if bits_needed == 0:
             return []
         data = bytes(data)
@@ -129,7 +152,7 @@ class OPE(object):
 
         # Use AES-CTR cipher to generate a pseudo-random bit string
         aes_cipher = AES.new(digest, AES.MODE_CTR, counter=Counter.new(nbits=128))
-        bytes_needed = (bits_needed + 7) / 8
+        bytes_needed = int((bits_needed + 7) / 8)
         encrypted_data = aes_cipher.encrypt('\x00' * bytes_needed)
 
         # Convert the data to a list of bits

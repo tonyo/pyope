@@ -36,8 +36,8 @@ def sample_uniform(in_range, seed_coins):
     seed_coins.append(None)
     bit_iterator = iter(seed_coins)
     while cur_range.size() > 1:
-        mid = (cur_range.start + cur_range.end) / 2
-        bit = bit_iterator.next()
+        mid = int((cur_range.start + cur_range.end) / 2)
+        bit = next(bit_iterator)
         if bit == 0:
             cur_range.end = mid
         elif bit == 1:
