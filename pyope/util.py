@@ -7,8 +7,17 @@ def byte_to_bitstring(byte):
     return bits
 
 
+def data_to_byte_list(data):
+    for c in list(data):
+        if isinstance(c, str):
+            # Python 2
+            c =  bytearray(c)[0]
+        yield c
+
+
 def str_to_bitstring(data):
     """Convert a string to a list of bits"""
-    byte_list = list(bytearray(data))
+    assert isinstance(data, bytes), "Data must be an instance of bytes"
+    byte_list = data_to_byte_list(data)
     bit_list = [bit for data_byte in byte_list for bit in byte_to_bitstring(data_byte)]
     return bit_list
