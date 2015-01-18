@@ -10,5 +10,9 @@ def test_range_simple():
         assert r.contains(i)
     assert not r.contains(start - 1)
     assert not r.contains(end + 1)
-
     assert r.range_bit_size() == 10
+
+
+def test_range_repr():
+    a = ValueRange(1, 10)
+    assert eval(repr(a)) == a

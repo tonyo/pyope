@@ -24,6 +24,12 @@ class ValueRange(object):
         self._start = start
         self._end = end
 
+    def __repr__(self):
+        return 'ValueRange({0.start!r}, {0.end!r})'.format(self)
+
+    def __eq__(self, other):
+        return self.start == other.start and self.end == other.end
+
     @property
     def start(self):
         return self._start
