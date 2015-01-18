@@ -25,6 +25,15 @@ def test_ope_encrypt_decrypt():
         assert value == decrypted, "Dec(Enc(P)) != P"
 
 
+def test_ope_deterministic():
+    """Test that encrypting the same values yields the same results"""
+    values = [0, 314, 1337, 1338, 10000]
+    cipher = OPE(b'key-la-la')
+    encrypted_values_first = [cipher.encrypt(value) for value in values]
+    encrypted_values_second = [cipher.encrypt(value) for value in values]
+    assert encrypted_values_first == encrypted_values_second
+
+
 def test_dense_range():
     """Equal ranges must yield 1-to-1 mapping"""
     range_start = 0
