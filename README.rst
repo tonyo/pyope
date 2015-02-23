@@ -67,11 +67,9 @@ TODO
 ----
 
 - More tests
-- Get rid of the numpy dependency (rewrite hypergeometric sampling code?)
 - Optimize speed
 - Security guarantees
 - Test on x86
-- Python 3 support
 
 
 .. |PyPi version| image:: https://pypip.in/v/pyope/badge.png
