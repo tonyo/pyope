@@ -144,7 +144,9 @@ class OPE(object):
 
     def tape_gen(self, data):
         """Return a bit string, generated from the specified data string"""
-        data = bytes(data)
+
+        # FIXME
+        data = str(data).encode()
 
         # Derive a key
         hmac_obj = hmac.HMAC(self.key, digestmod=hashlib.sha256)
@@ -155,7 +157,7 @@ class OPE(object):
         # Use AES-CTR cipher to generate a pseudo-random bit string
         aes_cipher = AES.new(digest, AES.MODE_CTR, counter=Counter.new(nbits=128))
         while True:
-            encrypted_bytes = aes_cipher.encrypt('\x00' * 16)
+            encrypted_bytes = aes_cipher.encrypt(b'\x00' * 16)
             # Convert the data to a list of bits
             bits = util.str_to_bitstring(encrypted_bytes)
             for bit in bits:

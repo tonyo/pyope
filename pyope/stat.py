@@ -16,7 +16,7 @@ def sample_hgd(in_range, out_range, nsample, seed_coins):
         # Input and output domains have equal size
         return in_range.start + nsample_index - 1
 
-    in_sample_num = HGD.rhyper(in_size, out_size - in_size, nsample_index, seed_coins)
+    in_sample_num = HGD.rhyper(nsample_index, in_size, out_size - in_size, seed_coins)
     if in_sample_num == 0:
         return in_range.start
     elif in_sample_num == in_size:

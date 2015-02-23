@@ -10,7 +10,8 @@ class PRNG(object):
         self.coins = coins
 
     def draw(self):
-        bits = itertools.islice(self.coins, 32)
+        bits = list(itertools.islice(self.coins, 32))
+        assert len(bits) == 32
         out = 0
         for b in bits:
             out = (out << 1) | b
@@ -81,7 +82,7 @@ class HGD(object):
         # Degenerate distribution
         if minjx == maxjx:
             # no need to untangle TSL
-            return math.floor(maxjx)
+            return int(math.floor(maxjx))
 
         # Inverse transformation
         elif m - minjx < 10:
@@ -239,8 +240,4 @@ class HGD(object):
                 ix = kk - ix
 
         jx = ix
-        return math.floor(jx)
-
-
-if __name__ == "__main__":
-    print HGD.rhyper(1000000, 1000000000, 1000000000, random.random())
+        return int(math.floor(jx))
