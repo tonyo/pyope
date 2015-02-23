@@ -11,7 +11,7 @@ def data_to_byte_list(data):
     for c in list(data):
         if isinstance(c, str):
             # Python 2
-            c =  bytearray(c)[0]
+            c = bytearray(c)[0]
         yield c
 
 

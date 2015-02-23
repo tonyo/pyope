@@ -96,10 +96,10 @@ class OPE(object):
         mid = out_edge + int(math.ceil(out_size / 2.0))  # y
         assert in_size <= out_size
         if in_range.size() == 1:
-            coins = self.tape_gen(plaintext, out_range.range_bit_size())
+            coins = self.tape_gen(plaintext)
             ciphertext = stat.sample_uniform(out_range, coins)
             return ciphertext
-        coins = self.tape_gen(mid, in_range.range_bit_size())
+        coins = self.tape_gen(mid)
         x = stat.sample_hgd(in_range, out_range, mid, coins)
 
         if plaintext <= x:
@@ -125,13 +125,13 @@ class OPE(object):
         assert in_size <= out_size
         if in_range.size() == 1:
             in_range_min = in_range.start
-            coins = self.tape_gen(in_range_min, out_range.range_bit_size())
+            coins = self.tape_gen(in_range_min)
             sampled_ciphertext = stat.sample_uniform(out_range, coins)
             if sampled_ciphertext == ciphertext:
                 return in_range_min
             else:
                 raise InvalidCiphertextError('Invalid ciphertext')
-        coins = self.tape_gen(mid, in_range.range_bit_size())
+        coins = self.tape_gen(mid)
         x = stat.sample_hgd(in_range, out_range, mid, coins)
 
         if ciphertext <= mid:
@@ -142,12 +142,8 @@ class OPE(object):
             out_range = ValueRange(mid + 1, out_edge + out_size)
         return self.decrypt_recursive(ciphertext, in_range, out_range)
 
-    def tape_gen(self, data, bits_needed):
+    def tape_gen(self, data):
         """Return a bit string, generated from the specified data string"""
-        bits_needed = int(bits_needed)
-        assert bits_needed >= 0
-        if bits_needed == 0:
-            return []
         data = bytes(data)
 
         # Derive a key
@@ -158,9 +154,9 @@ class OPE(object):
 
         # Use AES-CTR cipher to generate a pseudo-random bit string
         aes_cipher = AES.new(digest, AES.MODE_CTR, counter=Counter.new(nbits=128))
-        bytes_needed = int((bits_needed + 7) / 8)
-        encrypted_data = aes_cipher.encrypt('\x00' * bytes_needed)
-
-        # Convert the data to a list of bits
-        bits = util.str_to_bitstring(encrypted_data)[:bits_needed]
-        return bits
+        while True:
+            encrypted_byte = aes_cipher.encrypt('\x00')
+            # Convert the data to a list of bits
+            bits = util.str_to_bitstring(encrypted_byte)
+            for bit in bits:
+                yield bit
