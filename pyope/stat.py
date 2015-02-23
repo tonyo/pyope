@@ -1,13 +1,9 @@
-import itertools
-import numpy.random as numpy_random
 from pyope.errors import NotEnoughCoinsError, InvalidCoinError
+from pyope.hgd import HGD
 
 
 def sample_hgd(in_range, out_range, nsample, seed_coins):
-    """Get a sample from the hypergeometric distribution, using the provided bit list as a source of randomness"""\
-    # FIXME
-    seed = list(itertools.islice(iter(seed_coins), 32))
-    numpy_random.seed(seed)
+    """Get a sample from the hypergeometric distribution, using the provided bit list as a source of randomness"""
     in_size = in_range.size()
     out_size = out_range.size()
     assert in_size > 0 and out_size > 0
@@ -20,7 +16,7 @@ def sample_hgd(in_range, out_range, nsample, seed_coins):
         # Input and output domains have equal size
         return in_range.start + nsample_index - 1
 
-    in_sample_num = numpy_random.hypergeometric(in_size, out_size - in_size, nsample_index)
+    in_sample_num = HGD.rhyper(in_size, out_size - in_size, nsample_index, seed_coins)
     if in_sample_num == 0:
         return in_range.start
     elif in_sample_num == in_size:

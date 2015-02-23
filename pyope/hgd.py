@@ -2,14 +2,19 @@
 
 import math
 import random
+import itertools
 
 
 class PRNG(object):
     def __init__(self, coins):
-        random.seed(str(coins))
+        self.coins = coins
 
     def draw(self):
-        res = 1.0 * random.getrandbits(32) / 2 ** 32
+        bits = itertools.islice(self.coins, 32)
+        out = 0
+        for b in bits:
+            out = (out << 1) | b
+        res = 1.0 * out / (2 ** 32 - 1)
         assert 0 <= res <= 1
         return res
 

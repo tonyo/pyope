@@ -155,8 +155,8 @@ class OPE(object):
         # Use AES-CTR cipher to generate a pseudo-random bit string
         aes_cipher = AES.new(digest, AES.MODE_CTR, counter=Counter.new(nbits=128))
         while True:
-            encrypted_byte = aes_cipher.encrypt('\x00')
+            encrypted_bytes = aes_cipher.encrypt('\x00' * 16)
             # Convert the data to a list of bits
-            bits = util.str_to_bitstring(encrypted_byte)
+            bits = util.str_to_bitstring(encrypted_bytes)
             for bit in bits:
                 yield bit
