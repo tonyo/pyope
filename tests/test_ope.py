@@ -1,3 +1,4 @@
+import pytest
 from pyope.ope import OPE, ValueRange
 
 
@@ -12,14 +13,16 @@ def test_order_guarantees():
 
 def test_ope_encrypt_decrypt():
     """Encrypt and then decrypt"""
-    values = [0, 10, 100, 314, 1337, 1338, 10000]
+    values = [-1000, -100, -20, -1, 0, 1, 10, 100, 314, 1337, 1338, 10000]
     key = b'key'
+    in_range = ValueRange(-1000, 2**20)
+    out_range = ValueRange(-10000, 2**32)
     # Client encrypts values
-    cipher = OPE(key)
+    cipher = OPE(key, in_range, out_range)
     encrypted_values = [cipher.encrypt(value) for value in values]
 
     # Decryption at the peer side
-    cipher_dec = OPE(key)
+    cipher_dec = OPE(key, in_range, out_range)
     for value, encrypted in zip(values, encrypted_values):
         decrypted = cipher_dec.decrypt(encrypted)
         assert value == decrypted, "Dec(Enc(P)) != P"
@@ -46,6 +49,9 @@ def test_dense_range():
     for v in values:
         assert cipher.encrypt(v) == v
         assert cipher.decrypt(v) == v
+
+    with pytest.raises(Exception):
+        OPE(key, ValueRange(0,10), ValueRange(1,2))
 
 
 def test_long_different_keys():

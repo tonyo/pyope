@@ -82,6 +82,9 @@ class OPE(object):
             out_range = ValueRange(DEFAULT_OUT_RANGE_START, DEFAULT_OUT_RANGE_END)
         self.out_range = out_range
 
+        if in_range.size() > out_range.size():
+            raise Exception('Invalid range')
+
     def encrypt(self, plaintext):
         """Encrypt the given plaintext"""
         if not self.in_range.contains(plaintext):

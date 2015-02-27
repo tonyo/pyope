@@ -41,6 +41,8 @@ class HGD(object):
     # Returns the number of white balls drawn when kk balls
     # are drawn at random from an urn containing nn1 white
     # and nn2 black balls.
+    # nn1 -- good
+    # nn2 -- bad
     @staticmethod
     def rhyper(kk, nn1, nn2, coins):
 
