@@ -45,201 +45,124 @@ class HGD(object):
     # nn2 -- bad
     @staticmethod
     def rhyper(kk, nn1, nn2, coins):
-
-        ix = None
-
         prng = PRNG(coins)
-
-        con, deltal = 57.56462733, 0.0078
-        deltau, scale = 0.0034, 1.0e25
-
-        # TODO Check validity of parameters.
-
-        reject = True
-
-        if nn1 >= nn2:
-            n1, n2 = float(nn2), float(nn1)
+        if kk > 10:
+            return HGD.hypergeometric_hrua(prng, nn1, nn2, kk)
         else:
-            n1, n2 = float(nn1), float(nn2)
+            return HGD.hypergeometric_hyp(prng, nn1, nn2, kk)
 
-        tn = n1 + n2
+    @staticmethod
+    def hypergeometric_hyp(prng, good, bad, sample):
+        d1 = bad + good - sample
+        d2 = float(min(bad, good))
 
-        if kk + kk >= tn:
-            k = tn - kk
-        else:
-            k = kk
+        Y = d2
+        K = sample
+        while Y > 0.0:
+            U = prng.draw()
+            Y -= int(math.floor(U + Y/(d1 + K)))
+            K -= 1
+            if K == 0:
+                break
+        Z = int(d2 - Y)
+        if good > bad:
+            Z = sample - Z
+        return Z
 
-        m = (k + 1.0) * (n1 + 1.0) / (tn + 2.0)
 
-        if k - n2 < 0:
-            minjx = 0
-        else:
-            minjx = k - n2
+    @staticmethod
+    def hypergeometric_hrua(prng, good, bad, sample):
+        D1 = 1.7155277699214135
+        D2 = 0.8989161620588988
+        # long mingoodbad, maxgoodbad, popsize, m, d9;
+        # double d4, d5, d6, d7, d8, d10, d11;
+        # long Z;
+        # double T, W, X, Y;
 
-        if n1 < k:
-            maxjx = n1
-        else:
-            maxjx = k
+        mingoodbad = min(good, bad)
+        popsize = good + bad
+        maxgoodbad = max(good, bad)
+        m = min(sample, popsize - sample)
+        d4 = float(mingoodbad) / popsize
+        d5 = 1.0 - d4
+        d6 = m*d4 + 0.5
+        d7 = math.sqrt((popsize - m) * sample * d4 * d5 / (popsize-1) + 0.5)
+        d8 = D1*d7 + D2
+        d9 = int(math.floor(float(m+1) * (mingoodbad+1) / (popsize + 2)))
+        d10 = HGD.loggam(d9+1) + HGD.loggam(mingoodbad-d9+1) + HGD.loggam(m-d9+1) + HGD.loggam(maxgoodbad-m+d9+1)
+        d11 = min(min(m, mingoodbad) + 1.0, math.floor(d6 + 16 * d7))
+        # 16 for 16-decimal-digit precision in D1 and D2
 
-        # Degenerate distribution
-        if minjx == maxjx:
-            # no need to untangle TSL
-            return int(math.floor(maxjx))
+        while True:
+            X = prng.draw()
+            Y = prng.draw()
+            W = d6 + d8 * (Y - 0.5) / X
 
-        # Inverse transformation
-        elif m - minjx < 10:
-            if k < n2:
-                w = math.exp(
-                    con + afc(n2) + afc(n1 + n2 - k) - afc(n2 - k) - afc(
-                        n1 + n2))
-            else:
-                w = math.exp(
-                    con + afc(n1) + afc(k) + afc(k - n2) - afc(n1 + n2))
+            # fast rejection:
+            if W < 0.0 or W >= d11:
+                continue
 
-            # TODO check!
-            while True:
-                p = w
-                ix = minjx
-                u = prng.draw() * scale
+            Z = int(math.floor(W))
+            T = d10 - (HGD.loggam(Z+1) + HGD.loggam(mingoodbad-Z+1) + HGD.loggam(m-Z+1) + HGD.loggam(maxgoodbad-m+Z+1))
 
-                finished = True
-                while u > p:
-                    u -= p
-                    p = p * (n1 - ix) * (k - ix)
-                    ix += 1
-                    p = p / ix / (n2 - k + ix)
-                    if ix > maxjx:
-                        finished = False
-                        break
-                if finished:
-                    break
+            # fast acceptance:
+            if (X*(4.0-X)-3.0) <= T:
+                break
 
-        # Hypergeometrics-2 points-exponential tails
-        else:
+            # fast rejection:
+            if X*(X-T) >= 1:
+                continue
 
-            s = math.sqrt((tn - k) * k * n1 * n2 / (tn - 1.0) / tn / tn)
+            # acceptance:
+            if 2.0 * math.log(X) <= T:
+                break
 
-            # Truncation centers cell boundaries at 0.5
-            d = math.floor(1.5 * s) + 0.5
-            xl = m - d + 0.5
-            xr = m + d + 0.5
-            a = afc(m) + afc(n1 - m) + afc(k - m) + afc(n2 - k + m)
-            expon = a - afc(xl) - afc(n1 - xl) - afc(k - xl) - afc(n2 - k + xl)
-            kl = math.exp(expon)
-            kr = math.exp(a - afc(xr - 1) -
-                          afc(n1 - xr + 1) - afc(k - xr + 1) -
-                          afc(n2 - k + xr - 1))
-            lamdl = -math.log(xl *
-                              (n2 - k + xl) / (n1 - xl + 1) / (k - xl + 1))
-            lamdr = -math.log(
-                (n1 - xr + 1) * (k - xr + 1) / xr / (n2 - k + xr))
 
-            p1 = 2 * d
-            p2 = p1 + kl / lamdl
-            p3 = p2 + kr / lamdr
+        # this is a correction to HRUA* by Ivan Frohne in rv.py
+        if good > bad:
+            Z = m - Z
 
-            # LABEL 30
-            while True:
-                u = prng.draw() * p3
-                v = prng.draw()
+        # another fix from rv.py to allow sample to exceed popsize/2
+        if m < sample:
+            Z = good - Z
 
-                # Rectangular region
-                if u < p1:
-                    ix = xl + u
-                # Left tail region
-                elif u <= p2:
-                    ix = xl + math.log(v) / lamdl
-                    if ix < minjx:
-                        continue
-                    v = v * (u - p1) * lamdl
-                # Right tail region
-                else:
-                    ix = xr - math.log(v) / lamdr
-                    if ix > maxjx:
-                        continue
-                    v = v * (u - p2) * lamdr
+        return Z
 
-                if m < 100 or ix <= 50:
-                    f = 1.0
-                    if m < ix:
-                        i = m + 1
-                        while i < ix:  # <= ?
-                            f = f * (n1 - i + 1.0) * (k - i + 1.0) / (
-                                n2 - k + i) / i
-                            i += 1
-                    elif m > ix:
-                        i = ix + 1
-                        while i < m:  # <= ?
-                            f = f * i * (n2 - k + i) / (n1 - i) / (
-                                k - i)  # + 1 ?
-                            i += 1
-                    if v <= f:
-                        reject = False
-                else:
-                    y = ix
-                    y1 = y + 1.0
-                    ym = y - m
-                    yn = n1 - y + 1.0
-                    yk = k - y + 1.0
-                    nk = n2 - k + y1
-                    r = -ym / y1
-                    s2 = ym / yn
-                    t = ym / yk
-                    e = -ym / nk
-                    g = yn * yk / (y1 * nk) - 1.0
-                    dg = 1.0
-                    if g < 0:
-                        dg = 1.0 + g
-                    gu = g * (1.0 + g * (-0.5 + g / 3.0))
-                    gl = gu - 0.25 * (g * g * g * g) / dg
-                    xm = m + 0.5
-                    xn = n1 - m + 0.5
-                    xk = k - m + 0.5
-                    nm = n2 - k + xm
+    """
+    /*
+     * log-gamma function to support some of these distributions. The
+     * algorithm comes from SPECFUN by Shanjie Zhang and Jianming Jin and their
+     * book "Computation of Special Functions", 1996, John Wiley & Sons, Inc.
+     */
+"""
+    @staticmethod
+    def loggam(x):
+        # double x0, x2, xp, gl, gl0;
+        # long k, n;
 
-                    ub = y * gu - m * gl + deltau + xm * r * (1 + r * (-0.5 + r / 3)) + \
-                        xn * s2 * (1.0 + s2 * (-0.5 + s2 / 3.0)) + \
-                        xk * t * (1.0 + t * (-0.5 + t / 3.0)) + \
-                        nm * e * (1.0 + e * (-0.5 + e / 3.0))
+        a = [8.333333333333333e-02, -2.777777777777778e-03,
+             7.936507936507937e-04, -5.952380952380952e-04,
+             8.417508417508418e-04, -1.917526917526918e-03,
+             6.410256410256410e-03, -2.955065359477124e-02,
+             1.796443723688307e-01, -1.39243221690590e+00]
+        x *= 1.0
+        x0 = x
+        n = 0
+        if x == 1.0 or x == 2.0:
+            return 0.0
 
-                    alv = math.log(v)
-
-                    if alv > ub:
-                        reject = True
-                    else:
-                        dr = xm * (r * r * r * r)
-                        if r < 0:
-                            dr /= (1.0 + r)
-                        ds = xn * (s2 * s2 * s2 * s2)
-                        if s2 < 0:
-                            ds /= (1.0 + s2)
-                        dt = xk * (t * t * t * t)
-                        if t < 0:
-                            dt /= (1.0 + t)
-                        de = nm * (e * e * e * e)
-                        if e < 0:
-                            de /= (1.0 + e)
-
-                        cand = ub - 0.25 * (dr + ds + dt + de) + (y + m) * (gl - gu) - deltal
-
-                        if alv < cand:
-                            reject = False
-                        else:
-                            cand = a - afc(ix) - afc(n1 - ix) - afc(k - ix) - afc(n2 - k + ix)
-                            reject = alv > cand
-
-                if not reject:
-                    break
-
-        if kk + kk >= tn:
-            if nn1 > nn2:
-                ix = kk - nn2 + ix
-            else:
-                ix = nn1 - ix
-
-        else:
-            if nn1 > nn2:
-                ix = kk - ix
-
-        jx = ix
-        return int(math.floor(jx))
+        elif x <= 7.0:
+            n = int(7 - x)
+            x0 = x + n
+        x2 = 1.0 / (x0*x0)
+        xp = 2 * math.pi
+        gl0 = a[9]
+        for k in range(8, -1, -1):
+            gl0 *= x2
+            gl0 += a[k]
+        gl = gl0/x0 + 0.5 * math.log(xp) + (x0-0.5) * math.log(x0) - x0
+        if x <= 7.0:
+            for k in range(1, n + 1):
+                gl -= math.log(x0-1.0)
+                x0 -= 1.0
+        return gl
