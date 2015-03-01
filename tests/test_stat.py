@@ -1,7 +1,6 @@
 import itertools
 import random
 import pytest
-from pyope import stat
 from pyope.hgd import HGD
 from pyope.ope import ValueRange
 from pyope.stat import sample_uniform
@@ -32,12 +31,33 @@ def test_uniform():
     # Test with a generator object
     assert sample_uniform(range1, itertools.repeat(0, 10)) == start_range
 
+    # Negative range
+    start_range = -32
+    end_range = -17
+    range = ValueRange(start_range, end_range)
+    assert sample_uniform(range, [0] * 5) == start_range
+    assert sample_uniform(range, [1] * 5) == end_range
+
+    # Mixed range
+    start_range = -32
+    end_range = 31
+    range = ValueRange(start_range, end_range)
+    assert sample_uniform(range, [0] * 6) == start_range
+    assert sample_uniform(range, [1] * 6) == end_range
 
 def test_hypergeometric():
     # Infinite random coins
-    coins = (x for x in iter(lambda _: random.randrange(2), 2))
-    assert HGD.rhyper(100, 0, 100, coins) == 0
-    assert HGD.rhyper(100, 100, 0, coins) == 100
-    assert HGD.rhyper(15, 2, 13, coins) == 2
-    assert 8 <= HGD.rhyper(20, 12, 12, coins) <= 12
+    coins = (x for x in iter(lambda: random.randrange(2), 2))
+    # Small values
+    assert HGD.rhyper(5, 0, 5, coins) == 0
+    assert HGD.rhyper(6, 6, 0, coins) == 6
+
+    # Large values
+    assert HGD.rhyper(2**32, 0, 2**32, coins) == 0
+    assert HGD.rhyper(2**64, 2**64, 0, coins) == 2**64
+    assert HGD.rhyper(2**32, 2, 2**32 - 2, coins) == 2
+    assert HGD.rhyper(2**60, 2**59, 2**59, coins) == 2**29
+
+    #for _ in range(10):
+    #    assert 2**40 - 2 <= HGD.rhyper(2**41 - 2, 2**40, 2**40, coins) <= 2**40 + 2
 
