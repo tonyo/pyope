@@ -56,7 +56,6 @@ def test_hypergeometric():
     assert HGD.rhyper(2**32, 0, 2**32, coins) == 0
     assert HGD.rhyper(2**64, 2**64, 0, coins) == 2**64
     assert HGD.rhyper(2**32, 2, 2**32 - 2, coins) == 2
-    assert HGD.rhyper(2**60, 2**59, 2**59, coins) == 2**29
 
     #for _ in range(10):
     #    assert 2**40 - 2 <= HGD.rhyper(2**41 - 2, 2**40, 2**40, coins) <= 2**40 + 2

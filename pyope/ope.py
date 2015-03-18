@@ -18,7 +18,8 @@ class ValueRange(object):
     """A range of consecutive integers with the specified boundaries (both inclusive)"""
 
     def __init__(self, start, end):
-        start, end = int(start), int(end)
+        if not isinstance(start, int) or not isinstance(end, int):
+            return ValueError('Range limits must be integers')
         if start > end:
             raise InvalidRangeLimitsError("Invalid range: the start of the range is greater than the end")
         self._start = start
@@ -86,7 +87,9 @@ class OPE(object):
             raise Exception('Invalid range')
 
     def encrypt(self, plaintext):
-        """Encrypt the given plaintext"""
+        """Encrypt the given plaintext value"""
+        if not isinstance(plaintext, int):
+            raise ValueError('Plaintext must be an integer value')
         if not self.in_range.contains(plaintext):
             raise OutOfRangeError('Plaintext is not within the input range')
         return self.encrypt_recursive(plaintext, self.in_range, self.out_range)
@@ -114,7 +117,9 @@ class OPE(object):
         return self.encrypt_recursive(plaintext, in_range, out_range)
 
     def decrypt(self, ciphertext):
-        """Decrypt the given ciphertext"""
+        """Decrypt the given ciphertext value"""
+        if not isinstance(ciphertext, int):
+            raise ValueError('Plaintext must be an integer value')
         if not self.out_range.contains(ciphertext):
             raise OutOfRangeError('Plaintext is not within the output range')
         return self.decrypt_recursive(ciphertext, self.in_range, self.out_range)
