@@ -18,12 +18,10 @@ class ValueRange(object):
     """A range of consecutive integers with the specified boundaries (both inclusive)"""
 
     def __init__(self, start, end):
-        if not isinstance(start, int) or not isinstance(end, int):
-            return ValueError('Range limits must be integers')
-        if start > end:
-            raise InvalidRangeLimitsError("Invalid range: the start of the range is greater than the end")
         self._start = start
         self._end = end
+        if start > end:
+            raise InvalidRangeLimitsError("Invalid range: the start of the range is greater than the end")
 
     def __repr__(self):
         return 'ValueRange({0.start!r}, {0.end!r})'.format(self)
@@ -151,7 +149,7 @@ class OPE(object):
         return self.decrypt_recursive(ciphertext, in_range, out_range)
 
     def tape_gen(self, data):
-        """Return a bit string, generated from the specified data string"""
+        """Return a bit string, generated from the given data string"""
 
         # FIXME
         data = str(data).encode()
@@ -170,3 +168,4 @@ class OPE(object):
             bits = util.str_to_bitstring(encrypted_bytes)
             for bit in bits:
                 yield bit
+
