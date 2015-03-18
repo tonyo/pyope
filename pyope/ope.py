@@ -119,9 +119,9 @@ class OPE(object):
     def decrypt(self, ciphertext):
         """Decrypt the given ciphertext value"""
         if not isinstance(ciphertext, int):
-            raise ValueError('Plaintext must be an integer value')
+            raise ValueError('Ciphertext must be an integer value')
         if not self.out_range.contains(ciphertext):
-            raise OutOfRangeError('Plaintext is not within the output range')
+            raise OutOfRangeError('Ciphertext is not within the output range')
         return self.decrypt_recursive(ciphertext, self.in_range, self.out_range)
 
     def decrypt_recursive(self, ciphertext, in_range, out_range):
