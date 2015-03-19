@@ -72,9 +72,10 @@ TODO
 - Security guarantees
 - Test on x86
 
-
 .. |PyPi version| image:: https://pypip.in/v/pyope/badge.png
+   :target: https://pypi.python.org/pypi/pyope/
 .. |Travis build| image:: https://travis-ci.org/rev112/pyope.svg?branch=master
+   :target: https://travis-ci.org/rev112/pyope/
 .. _order-preserving encryption: https://crypto.stackexchange.com/questions/3813/how-does-order-preserving-encryption-work
 .. _Boldyreva's paper: http://www.cc.gatech.edu/~aboldyre/papers/bclo.pdf
 .. _CryptDB: http://css.csail.mit.edu/cryptdb/
