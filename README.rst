@@ -72,7 +72,7 @@ TODO
 - Security guarantees
 - Test on x86
 
-.. |PyPi version| image:: https://pypip.in/v/pyope/badge.png
+.. |PyPi version| image:: https://img.shields.io/pypi/v/pyope.svg
    :target: https://pypi.python.org/pypi/pyope/
 .. |Travis build| image:: https://travis-ci.org/rev112/pyope.svg?branch=master
    :target: https://travis-ci.org/rev112/pyope/
