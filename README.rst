@@ -19,8 +19,9 @@ Quick examples
 Quick start
 ::
 
-  from pyope.ope import OPE
-  cipher = OPE(b'key goes here')
+  from pyope.ope import OPE, generate_key
+  k = generate_key() # generate random key
+  cipher = OPE(k)
   assert cipher.encrypt(1000) < cipher.encrypt(2000) < cipher.encrypt(3000)
   assert cipher.decrypt(cipher.encrypt(1337)) == 1337
   assert cipher.encrypt(1337) + cipher.encrypt(1) < cipher.encrypt(2000) # basic addition/subtraction works too!
