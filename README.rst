@@ -23,6 +23,7 @@ Quick start
   cipher = OPE(b'key goes here')
   assert cipher.encrypt(1000) < cipher.encrypt(2000) < cipher.encrypt(3000)
   assert cipher.decrypt(cipher.encrypt(1337)) == 1337
+  assert cipher.encrypt(1337) + cipher.encrypt(1) < cipher.encrypt(2000) # basic addition/subtraction works too!
 
 
 You can specify input and output ranges. Otherwise, default input (0..2^15-1) and output (0..2^31-1) ranges are used.
