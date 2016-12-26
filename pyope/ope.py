@@ -6,6 +6,7 @@ from Crypto.Util import Counter
 from pyope.errors import InvalidCiphertextError, InvalidRangeLimitsError, OutOfRangeError
 import pyope.stat as stat
 import pyope.util as util
+import base64, os
 
 
 DEFAULT_IN_RANGE_START = 0
@@ -169,3 +170,6 @@ class OPE(object):
             for bit in bits:
                 yield bit
 
+def generate_key():
+    '''Generate 32 random bytes, then encode with base64 to text'''
+    return base64.urlsafe_b64encode(os.urandom(32))
