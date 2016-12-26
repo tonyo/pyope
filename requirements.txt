@@ -1,0 +1,2 @@
+pytest>=2.6.4
+pycrypto>=2.6.1

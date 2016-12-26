@@ -5,5 +5,9 @@ python:
   - 3.2
   - 3.3
   - 3.4
-install: pip install .
-script: py.test tests/
+install: 
+- pip install .
+- pip install -r requirements.txt
+
+script: 
+- py.test tests/
