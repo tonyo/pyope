@@ -16,6 +16,8 @@ setup(
     author_email='anton.ovchi2nikov@gmail.com',
     license='MIT',
     packages=['pyope'],
-    install_requires=['pytest>=2.6.4', 'pycrypto>=2.6.1'],
+    install_requires=[
+        'cryptography>=1.1',
+    ],
     zip_safe=False,
 )
