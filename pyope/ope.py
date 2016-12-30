@@ -18,10 +18,17 @@ class ValueRange(object):
     """A range of consecutive integers with the specified boundaries (both inclusive)"""
 
     def __init__(self, start, end):
-        self._start = start
-        self._end = end
+        if not isinstance(start, int):
+            raise InvalidRangeLimitsError("Invalid range start: must be integer")
+
+        if not isinstance(end, int):
+            raise InvalidRangeLimitsError("Invalid range end: must be integer")
+
         if start > end:
             raise InvalidRangeLimitsError("Invalid range: the start of the range is greater than the end")
+
+        self._start = start
+        self._end = end
 
     def __repr__(self):
         return 'ValueRange({0.start!r}, {0.end!r})'.format(self)
