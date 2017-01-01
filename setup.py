@@ -1,11 +1,16 @@
 from setuptools import setup
-from os.path import exists
+
+with open('README.rst') as readme_file:
+    readme = readme_file.read()
+
+with open('HISTORY.rst') as history_file:
+    history = history_file.read()
 
 setup(
     name='pyope',
     version='0.1.0',
     description='Implementation of symmetric order-preserving encryption scheme',
-    long_description=open('README.rst').read() if exists("README.rst") else "",
+    long_description=readme + '\n\n' + history,
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python',
@@ -19,5 +24,4 @@ setup(
     install_requires=[
         'cryptography>=1.1',
     ],
-    zip_safe=False,
 )
