@@ -1,11 +1,14 @@
 import hmac
 import math
 import hashlib
-from Crypto.Cipher import AES
-from Crypto.Util import Counter
-from pyope.errors import InvalidCiphertextError, InvalidRangeLimitsError, OutOfRangeError
+
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers.modes import CTR
+
 import pyope.stat as stat
 import pyope.util as util
+from pyope.errors import InvalidCiphertextError, InvalidRangeLimitsError, OutOfRangeError
 
 
 DEFAULT_IN_RANGE_START = 0
@@ -161,18 +164,20 @@ class OPE(object):
         # FIXME
         data = str(data).encode()
 
-        # Derive a key
+        # Derive a key from data
         hmac_obj = hmac.HMAC(self.key, digestmod=hashlib.sha256)
         hmac_obj.update(data)
         assert hmac_obj.digest_size == 32
         digest = hmac_obj.digest()
 
-        # Use AES-CTR cipher to generate a pseudo-random bit string
-        aes_cipher = AES.new(digest, AES.MODE_CTR, counter=Counter.new(nbits=128))
+        # Use AES in the CTR mode to generate a pseudo-random bit string
+        aes_algo = algorithms.AES(digest)
+        aes_cipher = Cipher(aes_algo, mode=CTR(b'\x00' * 16), backend=default_backend())
+        encryptor = aes_cipher.encryptor()
+
         while True:
-            encrypted_bytes = aes_cipher.encrypt(b'\x00' * 16)
+            encrypted_bytes = encryptor.update(b'\x00' * 16)
             # Convert the data to a list of bits
             bits = util.str_to_bitstring(encrypted_bytes)
             for bit in bits:
                 yield bit
-
