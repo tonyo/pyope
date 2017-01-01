@@ -3,7 +3,7 @@ from os.path import exists
 
 setup(
     name='pyope',
-    version='0.0.2',
+    version='0.1.0',
     description='Implementation of symmetric order-preserving encryption scheme',
     long_description=open('README.rst').read() if exists("README.rst") else "",
     classifiers=[
