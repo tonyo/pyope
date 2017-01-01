@@ -8,7 +8,7 @@ with open('HISTORY.rst') as history_file:
 
 setup(
     name='pyope',
-    version='0.1.0',
+    version='0.1.1',
     description='Implementation of symmetric order-preserving encryption scheme',
     long_description=readme + '\n\n' + history,
     classifiers=[
