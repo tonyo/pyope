@@ -20,7 +20,8 @@ Quick start
 ::
 
   from pyope.ope import OPE
-  cipher = OPE(b'key goes here')
+  random_key = OPE.generate_key()
+  cipher = OPE(random_key)
   assert cipher.encrypt(1000) < cipher.encrypt(2000) < cipher.encrypt(3000)
   assert cipher.decrypt(cipher.encrypt(1337)) == 1337
 

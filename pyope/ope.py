@@ -1,6 +1,8 @@
 import hmac
 import math
 import hashlib
+import os
+import base64
 
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms
 from cryptography.hazmat.backends import default_backend
@@ -181,3 +183,25 @@ class OPE(object):
             bits = util.str_to_bitstring(encrypted_bytes)
             for bit in bits:
                 yield bit
+
+    @staticmethod
+    def generate_key(block_size=32):
+        """Generate random key for ope cipher.
+
+        Parameters
+        ----------
+        block_size : int, optional
+            Length of random bytes.
+
+        Returns
+        -------
+        random_key : str
+            A random key for encryption.
+
+        Notes:
+        ------
+        Implementation follows https://github.com/pyca/cryptography
+        """
+        random_seq = os.urandom(block_size)
+        random_key = base64.b64encode(random_seq)
+        return random_key
