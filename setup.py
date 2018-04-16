@@ -1,9 +1,12 @@
+import os
 from setuptools import setup
 
-with open('README.rst') as readme_file:
+setup_dir = os.path.dirname(os.path.realpath(__file__))
+
+with open(os.path.join(setup_dir, 'README.rst')) as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.rst') as history_file:
+with open(os.path.join(setup_dir, 'HISTORY.rst')) as history_file:
     history = history_file.read()
 
 setup(
@@ -23,5 +26,6 @@ setup(
     packages=['pyope'],
     install_requires=[
         'cryptography>=1.1',
+        'six>=1.5.0',
     ],
 )

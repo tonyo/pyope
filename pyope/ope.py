@@ -4,6 +4,7 @@ import hashlib
 import os
 import base64
 
+import six
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers.modes import CTR
@@ -23,10 +24,10 @@ class ValueRange(object):
     """A range of consecutive integers with the specified boundaries (both inclusive)"""
 
     def __init__(self, start, end):
-        if not isinstance(start, int):
+        if type(start) not in six.integer_types:
             raise InvalidRangeLimitsError("Invalid range start: must be integer")
 
-        if not isinstance(end, int):
+        if type(end) not in six.integer_types:
             raise InvalidRangeLimitsError("Invalid range end: must be integer")
 
         if start > end:
@@ -47,7 +48,7 @@ class ValueRange(object):
 
     @start.setter
     def start(self, value):
-        if not isinstance(value, int):
+        if type(value) not in six.integer_types:
             raise ValueError('Start value must be integer')
         self._start = value
 
@@ -57,7 +58,7 @@ class ValueRange(object):
 
     @end.setter
     def end(self, value):
-        if not isinstance(value, int):
+        if type(value) not in six.integer_types:
             raise ValueError('End value must be integer')
         self._end = value
 
