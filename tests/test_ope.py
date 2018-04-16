@@ -63,3 +63,23 @@ def test_long_different_keys():
     values = [0, 1, 10, 100, 1000, 2000, 3000, 4000, 5000]
     for v in values:
         assert ope1.encrypt(v) != ope2.encrypt(v)
+
+
+def test_encrypt_small_out_range_issue():
+    """Regression test for this issue: https://github.com/rev112/pyope/issues/13"""
+    cipher = OPE(b'fresh key',
+                 in_range=ValueRange(0, 2),
+                 out_range=ValueRange(2, 5))
+    assert cipher.encrypt(0)
+    assert cipher.encrypt(1)
+    assert cipher.encrypt(2)
+
+
+def test_big_ranges():
+    in_range = ValueRange(2**32, 2**33)
+    out_range = ValueRange(2**48, 2**49)
+    ope = OPE(b'test-big-ranges', in_range, out_range)
+    plaintext = in_range.start
+    while plaintext <= in_range.end:
+        assert ope.encrypt(plaintext)
+        plaintext += 2**24

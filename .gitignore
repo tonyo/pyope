@@ -8,3 +8,5 @@ build
 .coverage
 dist/
 htmlcov/
+.tox
+.pytest_cache
