@@ -20,10 +20,8 @@ def sample_hgd(in_range, out_range, nsample, seed_coins):
     in_sample_num = HGD.rhyper(nsample_index, in_size, out_size - in_size, seed_coins)
     if in_sample_num == 0:
         return in_range.start
-    elif in_sample_num == in_size:
-        return in_range.end
     else:
-        in_sample = in_range.start + in_sample_num
+        in_sample = in_range.start + in_sample_num - 1
         assert in_range.contains(in_sample)
         return in_sample
 
