@@ -3,15 +3,14 @@ pyope
 
 |PyPi version| |Travis build|
 
-This is an implementation of Boldyreva symmetric `order-preserving encryption`_ scheme (`Boldyreva's paper`_). 
+This is an implementation of Boldyreva symmetric `order-preserving encryption`_ scheme (`Boldyreva's paper`_).
 
-**Disclaimer 1** This is a work in progress, which should be reviewed and evaluated before using in production and/or
-sensitive applications. If you have any concerns about used cryptographic primitives or specific implementation
-details, feel free to open a Github issue and we'll discuss everything there.
+Supported Python versions: 2.7 and 3.4+
+
+**Disclaimer 1** This is an experimental implementation, which should be thoroughly reviewed and evaluated before using in production and/or sensitive applications.
 
 **Disclaimer 2** The Boldyreva scheme is not a standardized algorithm, so there are no test vectors and fixed plaintext-ciphertext
-mapping for a given key. It means that, generally speaking, a plaintext encrypted by two different versions of the package
-with the same key might not be equal to each other.
+mapping for a given key. It means that, generally speaking, a plaintext encrypted with the same key by two different versions of the package might not be equal to each other.
 
 Quick examples
 --------------
@@ -40,9 +39,9 @@ About order-preserving encryption
 ---------------------------------
 
 Order-preserving encryption (OPE) allows to compare ciphertext values in order to learn the corresponding relation
-between the underlying plaintexts. The algorithm implemented in this package (Boldyreva's method) is **less secure**
-than any deterministic encryption schemes or modes (such as ECB), because this scheme is deterministic by design (i.e.,
-for a certain key equal plaintext are always mapped to a single ciphertext value).
+between the underlying plaintexts. By definition, order-preserving encryption methods are **less secure** than
+conventional encryption algorithms for the same data sizes, because the former leak ordering information of the plaintext 
+values.
 
 How can OPE be useful? For example, some systems may need OPE to perform a certain set of queries (such as range SQL
 queries) over encrypted data. These systems include `CryptDB`_ and `Monomi`_ to name a few.
@@ -52,8 +51,7 @@ Security
 
 As mentioned above, security guarantees for Boldyreva's schema are weaker than those of deterministic encryption schemes,
 but security can still be improved if the encryption keys are long enough. It is advised to use randomly generated keys at
-least 128 bits long, with the optimal size being equal to 256 bits. Keys can be longer, but it won't improve the overall
-security.
+least 256 bits long.
 
 
 Running tests
@@ -69,9 +67,8 @@ TODO
 ----
 
 - More tests
-- Optimize speed
-- Security guarantees
-- Test on x86
+- Optimize performance
+- Security guarantees?
 
 .. |PyPi version| image:: https://img.shields.io/pypi/v/pyope.svg
    :target: https://pypi.python.org/pypi/pyope/
