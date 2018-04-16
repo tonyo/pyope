@@ -1,7 +1,6 @@
 # Fortran code was used as a reference: http://www.netlib.org/toms-2014-06-10/668
 
 import math
-import random
 import itertools
 
 
@@ -69,7 +68,6 @@ class HGD(object):
             Z = sample - Z
         return Z
 
-
     @staticmethod
     def hypergeometric_hrua(prng, good, bad, sample):
         D1 = 1.7155277699214135
@@ -116,7 +114,6 @@ class HGD(object):
             # acceptance:
             if 2.0 * math.log(X) <= T:
                 break
-
 
         # this is a correction to HRUA* by Ivan Frohne in rv.py
         if good > bad:

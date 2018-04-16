@@ -52,7 +52,7 @@ def test_dense_range():
         assert cipher.decrypt(v) == v
 
     with pytest.raises(Exception):
-        OPE(key, ValueRange(0,10), ValueRange(1,2))
+        OPE(key, ValueRange(0, 10), ValueRange(1, 2))
 
 
 def test_long_different_keys():

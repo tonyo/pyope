@@ -45,6 +45,7 @@ def test_uniform():
     assert sample_uniform(range, [0] * 6) == start_range
     assert sample_uniform(range, [1] * 6) == end_range
 
+
 def test_hypergeometric():
     # Infinite random coins
     coins = (x for x in iter(lambda: random.randrange(2), 2))
@@ -56,7 +57,3 @@ def test_hypergeometric():
     assert HGD.rhyper(2**32, 0, 2**32, coins) == 0
     assert HGD.rhyper(2**64, 2**64, 0, coins) == 2**64
     assert HGD.rhyper(2**32, 2, 2**32 - 2, coins) == 2
-
-    #for _ in range(10):
-    #    assert 2**40 - 2 <= HGD.rhyper(2**41 - 2, 2**40, 2**40, coins) <= 2**40 + 2
-
