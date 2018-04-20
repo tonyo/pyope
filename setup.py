@@ -11,7 +11,7 @@ with open(os.path.join(setup_dir, 'HISTORY.rst')) as history_file:
 
 setup(
     name='pyope',
-    version='0.2.0',
+    version='0.2.1',
     description='Implementation of symmetric order-preserving encryption scheme',
     long_description=readme + '\n\n' + history,
     classifiers=[
