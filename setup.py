@@ -19,7 +19,7 @@ setup(
         'Programming Language :: Python',
         'Topic :: Security :: Cryptography',
     ],
-    url='https://github.com/rev112/pyope/',
+    url='https://github.com/tonyo/pyope/',
     author='Anton Ovchinnikov',
     author_email='anton.ovchi2nikov@gmail.com',
     license='MIT',

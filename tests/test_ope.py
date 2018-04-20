@@ -66,7 +66,7 @@ def test_long_different_keys():
 
 
 def test_encrypt_small_out_range_issue():
-    """Regression test for this issue: https://github.com/rev112/pyope/issues/13"""
+    """Regression test for this issue: https://github.com/tonyo/pyope/issues/13"""
     cipher = OPE(b'fresh key',
                  in_range=ValueRange(0, 2),
                  out_range=ValueRange(2, 5))
