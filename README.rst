@@ -16,7 +16,7 @@ Quick examples
 --------------
 
 Quick start
-::
+.. code:: python
 
   from pyope.ope import OPE
   random_key = OPE.generate_key()
@@ -26,7 +26,7 @@ Quick start
 
 
 You can specify input and output ranges. Otherwise, default input (0..2^15-1) and output (0..2^31-1) ranges are used.
-::
+.. code:: python
 
   from pyope.ope import OPE, ValueRange
   cipher = OPE(b'long key' * 2, in_range=ValueRange(-100, 100),
