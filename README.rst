@@ -16,6 +16,7 @@ Quick examples
 --------------
 
 Quick start
+
 .. code:: python
 
   from pyope.ope import OPE
@@ -26,13 +27,13 @@ Quick start
 
 
 You can specify input and output ranges. Otherwise, default input (0..2^15-1) and output (0..2^31-1) ranges are used.
+
 .. code:: python
 
   from pyope.ope import OPE, ValueRange
   cipher = OPE(b'long key' * 2, in_range=ValueRange(-100, 100),
                                 out_range=ValueRange(0, 9999))
   assert 0 < cipher.encrypt(10) < cipher.encrypt(42) < 9999
-
 
 
 About order-preserving encryption
