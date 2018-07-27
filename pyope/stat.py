@@ -34,7 +34,7 @@ def sample_uniform(in_range, seed_coins):
     cur_range = in_range.copy()
     assert cur_range.size() != 0
     while cur_range.size() > 1:
-        mid = int(math.floor((cur_range.start + cur_range.end) / 2))
+        mid = int((cur_range.start + cur_range.end) / 2)
         bit = next(seed_coins)
         if bit == 0:
             cur_range.end = mid
