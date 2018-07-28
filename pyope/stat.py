@@ -1,4 +1,3 @@
-import math
 from pyope.errors import NotEnoughCoinsError, InvalidCoinError
 from pyope.hgd import HGD
 

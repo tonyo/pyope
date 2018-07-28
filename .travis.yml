@@ -4,7 +4,13 @@ python:
   - 3.4
   - 3.5
   - 3.6
+  - 3.7
 install:
   - pip install -r requirements_dev.txt
   - pip install .
 script: py.test tests/
+
+include:
+  - python: 3.6
+    environment: FLAKE8=1
+    script: flake8 .
