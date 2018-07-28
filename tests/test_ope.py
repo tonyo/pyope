@@ -43,7 +43,7 @@ def test_dense_range():
     range_start = 0
     range_end = 2**15
     in_range = ValueRange(range_start, range_end)
-    out_range = ValueRange(range_start, range_end)
+    out_range = in_range.copy()
     key = b'123'
     cipher = OPE(key, in_range, out_range)
     values = [0, 10, 20, 50, 100, 1000, 2**10, 2**15]
@@ -83,3 +83,9 @@ def test_big_ranges():
     while plaintext <= in_range.end:
         assert ope.encrypt(plaintext)
         plaintext += 2**24
+
+
+def test_huge_output_range():
+    """Regression test for https://github.com/tonyo/pyope/pull/16"""
+    cipher = OPE(b'key11', in_range=ValueRange(0, 0), out_range=ValueRange(0, 2**65))
+    assert cipher.encrypt(0)

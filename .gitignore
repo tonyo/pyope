@@ -3,6 +3,7 @@
 *.egg
 build
 *.pyc
+*.pyo
 .*.swp
 .cache
 .coverage
