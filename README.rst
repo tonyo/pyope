@@ -5,7 +5,7 @@ pyope
 
 This is an implementation of Boldyreva symmetric `order-preserving encryption`_ scheme (`Boldyreva's paper`_).
 
-Supported Python versions: 2.7 and 3.4+
+Supported Python versions: 2.7 and 3.5+
 
 **Disclaimer 1** This is an experimental implementation, which should be thoroughly reviewed and evaluated before using in production and/or sensitive applications.
 
