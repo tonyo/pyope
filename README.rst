@@ -12,7 +12,14 @@ Supported Python versions: 2.7 and 3.5+
 **Disclaimer 2** The Boldyreva scheme is not a standardized algorithm, so there are no test vectors and fixed plaintext-ciphertext
 mapping for a given key. It means that, generally speaking, a plaintext encrypted with the same key by two different versions of the package might not be equal to each other.
 
-Quick examples
+Installation
+------------
+
+.. code:: shell
+
+  pip install pyope
+
+Examples
 --------------
 
 Quick start
